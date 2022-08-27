@@ -26,7 +26,7 @@ func main() {
 			"name": "yahya",
 		})
 	})
-
+	// create todo
 	app.Post("api/todos", func(c *fiber.Ctx) error {
 		todo := &Todo{}
 
@@ -41,6 +41,7 @@ func main() {
 		return c.JSON(todos)
 
 	})
+	// marck todo as done 
 
 	app.Patch("api/todos/:id/done", func(c *fiber.Ctx) error {
 		id, err := c.ParamsInt("id")
@@ -58,11 +59,29 @@ func main() {
 
 		return c.JSON(todos)
 	})
+	
+	// marck todo as undone
+		app.Patch("api/todos/:id/undone", func(c *fiber.Ctx) error {
+		id, err := c.ParamsInt("id")
 
+		if err != nil {
+			return c.Status(401).SendString("Invalid Id")
+		}
+
+		for i, t := range todos {
+			if t.ID == id {
+				todos[i].Done = false
+				break
+			}
+		}
+
+		return c.JSON(todos)
+	})
+	// get all todos
 	app.Get("api/todos", func(c *fiber.Ctx) error {
 		return c.JSON(todos)
 	})
-
+	// delete todo
 	app.Delete("api/todos/:id", func(c *fiber.Ctx) error {
 		id, err := c.ParamsInt("id")
 		if err != nil {
@@ -76,5 +95,29 @@ func main() {
 		}
 		return c.JSON(todos)
 	})
+	// update todo
+	app.Patch("api/todos/:id", func(c *fiber.Ctx) error {
+		id , err :=c.ParamsInt("id")
+
+		todo := &Todo{}
+
+		if errb := c.BodyParser(todo); errb != nil {
+			return errb
+		}
+		if err != nil {
+			return c.Status(401).SendString("Invalid Id")
+		}
+
+		for i , t := range todos{
+			if t.ID == id {
+				todos[i].Todo = todo.Todo
+				return c.JSON(t)
+			}
+		}
+
+		return c.Status(404).SendString("todo Not Found")
+	})
+
+
 	log.Fatal(app.Listen(":4050"))
 }
