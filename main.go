@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
+	"log"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"log"
 )
 
 type Todo struct {
@@ -19,6 +21,10 @@ func main() {
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
 	}))
+	app.Use(func(c *fiber.Ctx) error {
+		fmt.Println("test middleware")
+		return c.Next()
+	})
 	todos := []Todo{}
 
 	app.Get("/", func(c *fiber.Ctx) error {
