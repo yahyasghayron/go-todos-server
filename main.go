@@ -81,6 +81,20 @@ func main() {
 	app.Get("api/todos", func(c *fiber.Ctx) error {
 		return c.JSON(todos)
 	})
+	// get  todo
+	app.Get("api/todos/:id", func(c *fiber.Ctx) error {
+		id, err := c.ParamsInt("id")
+		if err != nil {
+			return c.Status(401).SendString("Invalid Id")
+		}
+
+		for i, t := range todos{
+			if t.ID == id  {
+				return c.JSON(todos[i])
+			}
+		}
+		return c.Status(404).SendString("todo not found")
+	})
 	// delete todo
 	app.Delete("api/todos/:id", func(c *fiber.Ctx) error {
 		id, err := c.ParamsInt("id")
