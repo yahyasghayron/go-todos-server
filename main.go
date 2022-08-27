@@ -111,7 +111,7 @@ func main() {
 		for i , t := range todos{
 			if t.ID == id {
 				todos[i].Todo = todo.Todo
-				return c.JSON(t)
+				return c.JSON(todos)
 			}
 		}
 
