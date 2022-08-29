@@ -14,10 +14,10 @@ type Todo struct {
 	Done bool   `json:"done"`
 }
 
+var todosCount = 0
 func main() {
 
 	app := fiber.New()
-
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
 	}))
@@ -40,8 +40,9 @@ func main() {
 			return err
 		}
 
-		todo.ID = len(todos) + 1
-
+		todo.ID = todosCount + 1
+		todosCount++
+		
 		todos = append(todos, *todo)
 
 		return c.JSON(todos)
